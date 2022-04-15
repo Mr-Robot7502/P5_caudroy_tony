@@ -26,12 +26,35 @@ for (let i = 0; i < product.colors.length; i++) {
     color.textContent = product.colors[i];
     productColor.appendChild(color);
 }
+// écouter l'évenement
+const btnAdd = document.getElementById("addToCart");
+btnAdd.addEventListener('click', addToCart);
+console.log(btnAdd);
+
+
+// récuperer la quantité voulue
+btnAdd.onclick =() => {
+  localStorage.setItem("quantity", quantity.value);
+
+if (quantity.value > 0 && quantity.value <= 101 ) {
+    console.log("tout va bien") ;
+} else  {
+    alert("Veuillez saisir une quantité en 1 et 100")
+    console.log("chosir quantité en 1 et 100")
+   }
+   if (productColor.value) {
+       console.log("c'est bon");
+    } else {
+       alert("Veuillez saisir une couleur")
+       console.log("pad bon")
+   }
+}
 
 /**
  * Ecouter sur l'évènement de click au panier
  * Pour pouvoir récupérer la quantité voulue (faire la vérification => quantité > 0 sinon erreur à afficher à l'utilisateur)
  */
 
-// const product_string = JSON.stringify(product);
-// console.log(product_string);
-// console.log(JSON.parse(product_string));
+const product_string = JSON.stringify(product);
+console.log(product_string);
+console.log(JSON.parse(product_string));
