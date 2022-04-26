@@ -1,7 +1,3 @@
-// import * as uneApi from './lib/api.js';
-// import uneApi2 from './lib/api.js';
-
-// importation de l'Api//
 import { getProducts } from './lib/api.js';
 
 function populateProductsInPage(products) {
