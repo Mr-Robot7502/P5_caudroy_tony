@@ -1,5 +1,6 @@
-//Affichage des produits dans le panier 
-function populateProductsInCart() {
-    const product_id = new URL(window.location.href).searchParams.get("id");
-    const productList = document.querySelector("#cart_items");
-}
+import { getCart } from './lib/cart.js';
+
+const cartContent = await getCart();
+console.log(cartContent)
+
+const listItem = document.querySelector("#cart__items");

@@ -1,8 +1,9 @@
-// Avoir une variable qui permet de stocker les produits...
-// Avoir une méthode pour récupérer et mettre à jour depuis le localstorage
+import { getProduct } from './api.js';
 
 let cartContent = [];
 if (localStorage.getItem('cart') !== null) cartContent = JSON.parse(localStorage.getItem('cart'));
+
+// Ajouter au panier 
 
 function addToCart(product_id, color, quantity) {
 
@@ -24,16 +25,30 @@ function addToCart(product_id, color, quantity) {
     localStorage.setItem('cart', JSON.stringify(cartContent));
 }
 
-/**
-    function deleteFromCart() {
-        // Algo de suppression
+/*function deleteFromCart(product_id) {
+    const productFound = cartContent.filter(cartItem => cartItem.product_id !== product_id)
+    console.log(productFound)
+    // Algo de suppression
 
-        // Update du localstorage
-    }
+    // Update du localstorage
+    localStorage.setItem('cart', JSON.stringify(cartContent));
+    console.log(cartContent)
+}
 */
 
-export default { // Méthodes exposées vers l'extérieur
+async function getCart() {
+    return await Promise.all(cartContent.map(async content => {
+        const product = await getProduct(content.product_id);
+
+        return {
+            product,
+            quantity: content.quantity,
+            color: content.color
+        }
+    }));
+}
+
+export { // Méthodes exposées vers l'extérieur
     addToCart,
-    // Méthode suppression du panier
-    // Méthode mise à jour quantité d'un produit dans le panier
+    getCart,
 }
