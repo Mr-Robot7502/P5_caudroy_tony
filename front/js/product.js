@@ -1,57 +1,115 @@
 import { getProduct } from './lib/api.js';
-import { addToCart } from './lib/cart.js';
 
-const product_id = new URL(window.location.href).searchParams.get("id");
-const btnAdd = document.querySelector("#addToCart");
-const productTitle = document.querySelector("#title");
-const productPrice = document.querySelector("#price");
-const productDescription = document.querySelector("#description");
-const productColor = document.querySelector("#colors");
-const productImg = document.querySelector(".item__img");
-const quantityInput = document.querySelector('#quantity');
-const product = await getProduct(product_id);
+// TODO mise à jour du local storage fonctionnelle à l'ajout de produit
+    // 1) le produit avec son id, sa couleur, et sa quantité sont sauvegardés dans le local storage
+    // 2) lors de l'ajout d'un autre produit, une nouvelle entrée est dans le local storage
+    // 3) quand on modifie la quantité d'une même combinaison id/couleur, elle est mise à jour dans le local storage
 
 /**
- * @todo Mettre dans une fonction updateProductPage
+ * ici, on fait en sorte d'exécuter le JS uniquement si la page HTML a été chargée * 
  */
-document.title = product.name;
-const img = document.createElement("img");
-img.setAttribute("src", product.imageUrl);
-img.setAttribute("alt", product.altTxt);
-productImg.appendChild(img);
-productTitle.textContent = product.name;
-productPrice.textContent = product.price;
-productDescription.textContent = product.description;
+window.addEventListener('DOMContentLoaded', async () => {
 
-for (let i = 0; i < product.colors.length; i++) {
-    let color = document.createElement("option");
-    color.setAttribute("value", product.colors[i]);
-    color.textContent = product.colors[i];
-    productColor.appendChild(color);
-}
-/**
- * End todo
- */
+    // on récupère l'id du produit depuis l'URL
+    const product_id = new URL(window.location.href).searchParams.get("id");
 
-function buttonAddToCartClicked() {
-    const color = productColor.value;
-    const quantity = quantityInput.value;
+    // on récupère les différents éléments HTML avec lesquels on va interagir
+    const btnAddHTMLElement = document.querySelector("#addToCart");
+    const productTitle = document.querySelector("#title");
+    const productPrice = document.querySelector("#price");
+    const productDescription = document.querySelector("#description");
+    const productColorHTMLElement = document.querySelector("#colors"); // il s'agit du select contenant les options de couleur
+    const productImg = document.querySelector(".item__img");
+    const quantityInputHTMLElement = document.querySelector('#quantity'); // il s'agit de l'input de quantité
 
-    if (quantity < 1 || quantity > 100) {
-        alert("Veuillez saisir une quantité en 1 et 100");
-        return;
+    // on récupère le produit depuis l'API (le backend )
+    const product = await getProduct(product_id);
+    
+    // on change le titre de la page HTML
+    document.title = product.name;
+
+    // on va insérer dans la page les informations du produit pour un rendu visuel
+
+    /**
+     *  1)  on définit l'image du produit qu'on va insérer dans le DOM
+     *      cet object image n'est pas pour l'instant affiché, il est juste en mémoire;
+     *  2)  on définit les attributs de l'image (src, alt)
+     *  3)  on insère l'image dans le DOM dans la div prévue à cet effet => `productImg.appendChild(img);`
+     */
+    const img = document.createElement("img");
+    img.setAttribute("src", product.imageUrl);
+    img.setAttribute("alt", product.altTxt);
+    productImg.appendChild(img);
+
+    // on fait pareil qu'avec l'image pour le contenu textuel du produit à afficher à l'utilisateur
+    productTitle.textContent = product.name;
+    productPrice.textContent = product.price;
+    productDescription.textContent = product.description;
+    
+    // on remplit le select avec toutes les options de couleur
+    for (let i = 0; i < product.colors.length; i++) {
+        let color = document.createElement("option");
+        color.setAttribute("value", product.colors[i]);
+        color.textContent = product.colors[i];
+        productColorHTMLElement.appendChild(color);
     }
-    if (!color) {
-        alert("Veuillez saisir une couleur");
-        return;
+    
+    /**
+     * fonction qui définit ce qu'il se passe quand on ajoute quelque chose au panier
+     * 
+     */
+    function addToCart(product_id, color, quantity) {
+        // on transforme en nombre entier la valeur de quantité récupérée depuis le HTML
+        quantity = parseInt(quantity, 10); 
+        
+        /**
+         * démonstration du fait qu'un JSON est la représentation sous forme de chaîne de caractères d'un objet JavaScript
+         */
+         const selectedProduct = {product_id, color, quantity}; // ceci est égal à {product_id: product_id, color: color, quantity: quantity}
+         // ! la syntaxe raccourcie pour créer un objet ne fonctionne que si le nom de la variable et le nom de la clé dans l'objet sont les mêmes
+
+         // récupération depuis le local storage
+         // ! la valeur récupérée est un string
+         let productObj = null;
+         let productFromLocalStorage = localStorage.getItem(`${product_id}_${color}`);
+
+        /* Je vérifie si on paner est vide, si c'est le cas, j'ajoute le produit*/
+        if (!productFromLocalStorage) {
+            //stockage dans le local storage
+            localStorage.setItem(`${product_id}_${color}`, JSON.stringify(selectedProduct));
+        } else {
+            productObj = JSON.parse(productFromLocalStorage);
+            productObj.quantity = productObj.quantity + quantity;
+            localStorage.setItem(`${product_id}_${color}`, JSON.stringify(productObj));
+        } 
     }
-    alert("Ajout effectué");
-    addToCart(product._id, color, quantity);
-}
 
-btnAdd.addEventListener('click', buttonAddToCartClicked);
 
-/**
- * @todo appeler une fonction updateProductPage
- */
-// updateProductPage();
+    /**
+     * on utilise souvent le mot "handle" pour désigner des fonctions, qui réagissent à des évènements;
+     * c'est une convention de nommer ce type de fonction selon le modèle handleSomething;
+     * exemples =>
+     *  - handleClick
+     *  - handleChange
+     *  - handleUserScrolledOnPage
+     */
+    function handleAddToCartClick() {
+        const color = productColorHTMLElement.value;
+        const quantity = quantityInputHTMLElement.value;
+        if (quantity < 1 || quantity > 100) {
+            alert("Veuillez saisir une quantité en 1 et 100");
+            return; // on arrête la fonction
+        }
+        if (!color) {
+            alert("Veuillez saisir une couleur");
+            return;
+        }
+        // TODO réparer la fonction addToCart afin qu'elle n'ajoute pas plusieurs produits en même temps et qu'elle ajoute surtout le bon produit
+        addToCart(product._id, color, quantity);
+        // alert("Ajout effectué");
+    }
+    btnAddHTMLElement.addEventListener('click', handleAddToCartClick);
+    
+});
+
+
