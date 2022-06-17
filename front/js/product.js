@@ -1,10 +1,5 @@
 import { getProduct } from './lib/api.js';
 
-// TODO mise à jour du local storage fonctionnelle à l'ajout de produit
-    // 1) le produit avec son id, sa couleur, et sa quantité sont sauvegardés dans le local storage
-    // 2) lors de l'ajout d'un autre produit, une nouvelle entrée est dans le local storage
-    // 3) quand on modifie la quantité d'une même combinaison id/couleur, elle est mise à jour dans le local storage
-
 /**
  * ici, on fait en sorte d'exécuter le JS uniquement si la page HTML a été chargée * 
  */
@@ -73,6 +68,7 @@ window.addEventListener('DOMContentLoaded', async () => {
          let productObj = null;
          let productFromLocalStorage = localStorage.getItem(`${product_id}_${color}`);
 
+
         /* Je vérifie si on paner est vide, si c'est le cas, j'ajoute le produit*/
         if (!productFromLocalStorage) {
             //stockage dans le local storage
@@ -81,7 +77,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             productObj = JSON.parse(productFromLocalStorage);
             productObj.quantity = productObj.quantity + quantity;
             localStorage.setItem(`${product_id}_${color}`, JSON.stringify(productObj));
+            console.log(productObj)
         } 
+        console.log(product)
     }
 
 
@@ -104,9 +102,9 @@ window.addEventListener('DOMContentLoaded', async () => {
             alert("Veuillez saisir une couleur");
             return;
         }
-        // TODO réparer la fonction addToCart afin qu'elle n'ajoute pas plusieurs produits en même temps et qu'elle ajoute surtout le bon produit
+       
         addToCart(product._id, color, quantity);
-        // alert("Ajout effectué");
+         alert("Ajout effectué");
     }
     btnAddHTMLElement.addEventListener('click', handleAddToCartClick);
     
