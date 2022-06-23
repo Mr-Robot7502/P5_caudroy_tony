@@ -60,8 +60,12 @@ window.addEventListener('DOMContentLoaded', async () => {
         /**
          * démonstration du fait qu'un JSON est la représentation sous forme de chaîne de caractères d'un objet JavaScript
          */
-         const selectedProduct = {product_id, color, quantity}; // ceci est égal à {product_id: product_id, color: color, quantity: quantity}
+         const selectedProductToStoreInLocalStorage = {product_id, color, quantity}; // ceci est égal à {product_id: product_id, color: color, quantity: quantity}
          // ! la syntaxe raccourcie pour créer un objet ne fonctionne que si le nom de la variable et le nom de la clé dans l'objet sont les mêmes
+         selectedProductToStoreInLocalStorage.name = product.name;
+         selectedProductToStoreInLocalStorage.description = product.description;
+         selectedProductToStoreInLocalStorage.price = product.price;
+         selectedProductToStoreInLocalStorage.imageUrl = product.imageUrl;
 
          // récupération depuis le local storage
          // ! la valeur récupérée est un string
@@ -72,7 +76,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         /* Je vérifie si on paner est vide, si c'est le cas, j'ajoute le produit*/
         if (!productFromLocalStorage) {
             //stockage dans le local storage
-            localStorage.setItem(`${product_id}_${color}`, JSON.stringify(selectedProduct));
+            localStorage.setItem(`${product_id}_${color}`, JSON.stringify(selectedProductToStoreInLocalStorage));
         } else {
             productObj = JSON.parse(productFromLocalStorage);
             productObj.quantity = productObj.quantity + quantity;
