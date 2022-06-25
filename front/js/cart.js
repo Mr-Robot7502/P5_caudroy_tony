@@ -22,7 +22,7 @@
         sectionCart.style.display = "none";
         console.log("panier vide");
     } else {
-        // Affichage des produits du LocalStorage, si panie le panier n'est pas vide  //
+        // Affichage des produits du LocalStorage, si panier le panier n'est pas vide  //
         const productCart = document.querySelector("#cart__items");
 
         // boucle pour insérer les articles un à un
@@ -53,8 +53,22 @@
             </div>`;
             // insertion d'un produit dans le HTML
             productCart.appendChild(article);
+            console.log(article)
         });
 
+    }
+    //Sélection du bouton supprimer//
+    const btnDelete = document.querySelectorAll(".deleteItem")
+    console.log(btnDelete)
+   // boucle avec evenement lorsque je clique sur le bouton supprimer
+    for (let i = 0; i < btnDelete.length; i++){
+        btnDelete[i].addEventListener("click", (event) =>{
+            event.preventDefault();
+            
+            // produit selectionné lorsque je clique sur le bouton supprimer
+            let deleteId = productsList[i].product_id;
+            console.log(deleteId)
+        })
     }
 
 });
