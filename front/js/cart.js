@@ -1,3 +1,5 @@
+import { getLocalStorageKey } from './lib/localStorage.js';
+
 /**
  * ici, on fait en sorte d'exécuter le JS uniquement si la page HTML a été chargée * 
  */
@@ -12,7 +14,6 @@
         // on ajoute le produit récupéré depuis le local storage grâce à la clé dans le tableau de produits créé précédemment 
         productsList.push(JSON.parse(localStorage[key]));
     }
-    console.log(productsList);
 
     const titleCart = document.querySelector("h1");
     const sectionCart = document.querySelector(".cart");
@@ -29,7 +30,7 @@
         productsList.forEach(product => {
             // remplissage du template avec les bonnes données de produits
             const article = document.createElement("article");
-            article.setAttribute("data-id", product._id);
+            article.setAttribute("data-id", product.product_id);
             article.setAttribute("data-color", product.color);
             article.classList.add("cart__item");
             article.innerHTML = `<div class="cart__item__img">
@@ -57,19 +58,45 @@
         });
 
     }
+           
     //Sélection du bouton supprimer//
     const btnDelete = document.querySelectorAll(".deleteItem")
-    console.log(btnDelete)
-   // boucle avec evenement lorsque je clique sur le bouton supprimer
+    // boucle avec evenement lorsque je clique sur le bouton supprimer
     for (let i = 0; i < btnDelete.length; i++){
         btnDelete[i].addEventListener("click", (event) =>{
-            event.preventDefault();
-            
             // produit selectionné lorsque je clique sur le bouton supprimer
-            let deleteId = productsList[i].product_id;
-            console.log(deleteId)
-        })
-    }
+            let productToDeleteId = productsList[i].product_id;
+            let productToDeleteColor = productsList[i].color;
+            // on récupère la clé du produit à supprimer dans le local storage
+            let productToDeleteLocalStorageKey = getLocalStorageKey(productToDeleteId, productToDeleteColor);
+            // on écrase la variable products list avec le résultat du filtrage qui exclut le produit à supprimer
+            productsList = productsList.filter( elt => elt.product_id !== productToDeleteId);
+            // on supprime ce produit du local storage directement
+            localStorage.removeItem(productToDeleteLocalStorageKey);
+            // refresh products list
+            const productToDeleteHTMLElement = document.querySelector(`[data-id="${productToDeleteId}"][data-color="${productToDeleteColor}"]`);
+            productToDeleteHTMLElement.remove();
 
-});
+            
+    })}
+
+    // TODO modification de la quantité
+     
+    // TODO logique de validation du formulaire
+    // Ajout des Regex
+    let form = document.querySelector(".cart__order__form");
+    //Création des expressions régulières
+    let emailRegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+    let nameRegExp = new RegExp(/^[a-zA-Z ,.'-]+$/);
+    let addressRegExp = new RegExp(/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/);
+
+})
+
+
+  
+
+
+
+  
+  
 

@@ -1,3 +1,4 @@
+import { getLocalStorageKey } from './lib/localStorage.js';
 import { getProduct } from './lib/api.js';
 
 /**
@@ -80,7 +81,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         } else {
             productObj = JSON.parse(productFromLocalStorage);
             productObj.quantity = productObj.quantity + quantity;
-            localStorage.setItem(`${product_id}_${color}`, JSON.stringify(productObj));
+            localStorage.setItem(getLocalStorageKey(product_id, color), JSON.stringify(productObj));
             console.log(productObj)
         } 
         console.log(product)
