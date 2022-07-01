@@ -109,7 +109,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
        
         addToCart(product._id, color, quantity);
-         alert("Ajout effectué");
+         alert("Ajout du "+ document.title + " " + color );
     }
     btnAddHTMLElement.addEventListener('click', handleAddToCartClick);
     

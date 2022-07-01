@@ -81,6 +81,7 @@ import { getLocalStorageKey } from './lib/localStorage.js';
     })}
     const btnQuantity = document.querySelectorAll(".itemQuantity");
     console.log(btnQuantity);
+  
     for (let i = 0; i < btnQuantity.length; i++) {
         btnQuantity[i].addEventListener("input", (event) =>{
            
