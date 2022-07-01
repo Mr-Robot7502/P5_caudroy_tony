@@ -65,6 +65,7 @@ import { getLocalStorageKey } from './lib/localStorage.js';
     for (let i = 0; i < btnDelete.length; i++){
         btnDelete[i].addEventListener("click", (event) =>{
             // produit selectionné lorsque je clique sur le bouton supprimer
+            let productToDeleteName = productsList[i].name;
             let productToDeleteId = productsList[i].product_id;
             let productToDeleteColor = productsList[i].color;
             // on récupère la clé du produit à supprimer dans le local storage
@@ -76,10 +77,19 @@ import { getLocalStorageKey } from './lib/localStorage.js';
             // refresh products list
             const productToDeleteHTMLElement = document.querySelector(`[data-id="${productToDeleteId}"][data-color="${productToDeleteColor}"]`);
             productToDeleteHTMLElement.remove();
-
-            
+            alert("Le " + productToDeleteName +" "+ productToDeleteColor + " est supprimé")
     })}
+    const btnQuantity = document.querySelectorAll(".itemQuantity");
+    console.log(btnQuantity);
+    for (let i = 0; i < btnQuantity.length; i++) {
+        btnQuantity[i].addEventListener("input", (event) =>{
+           
+            let productToChangeQuantity = productsList[i].quantity;
+            console.log(productToChangeQuantity);
+            let prodcutToChangeInLocalStorage = getLocalStorageKey(quantity);
+            localStorage.setItem(prodcutToChangeInLocalStorage);
 
+        })}
     // TODO modification de la quantité
      
     // TODO logique de validation du formulaire
