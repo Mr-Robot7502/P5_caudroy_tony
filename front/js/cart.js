@@ -96,25 +96,52 @@ import { getLocalStorageKey } from './lib/localStorage.js';
         })};
         //*******variable prix total panier*******//
         let totalBasket = [];
-        for (let m = 0; m < productsList.length; m++) {
-            let productPrice = productsList[m].price;
-            console.log(productPrice);
+        for (let p = 0; p < productsList.length; p++) {
+            console.log(productsList);
+            let productPrice = productsList[p].price;
             totalBasket.push(productPrice);
             console.log(totalBasket);
+
+       
             let reducer = (accumulator, currentValue) => accumulator + currentValue;
             let totalPrice = totalBasket.reduce(reducer,0);
+          
             console.log(totalPrice);
-            
+            let updateTotal = document.querySelector(".cart__price");
+            updateTotal.innerHTML = `
+            <div class="cart__price">
+                        <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${totalPrice}</span> €</p>
+                    </div>`;
+               
         };
+        for (let q = 0; q < productsList.length; q++) {
+            let productQuantity = productsList[q].quantity;
+            console.log(productQuantity);
+            totalBasket.push(productQuantity);
+            console.log(totalBasket);
+        }
+        //**********affichage total prix et quantité ***********/
+
+        //let updateTotal = document.querySelector(".cart__price");
+        
+        
+         //  const price = document.querySelector("#totalPrice")
+         // price.setAttribute("priceTotal", totalPrice);
+         //   updateTotal.appendChild(totalPrice);
+         //   updateTotal.innerHTML = `
+          //  <div class="cart__price">
+           //             <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${totalBasket}</span> €</p>
+            //        </div>`;
+               
     // TODO modification de la quantité
      
     // TODO logique de validation du formulaire
     // Ajout des Regex
-    let form = document.querySelector(".cart__order__form");
-    //Création des expressions régulières
-    let emailRegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-    let nameRegExp = new RegExp(/^[a-zA-Z ,.'-]+$/);
-    let addressRegExp = new RegExp(/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/);
+  //  let form = document.querySelector(".cart__order__form");
+   // //Création des expressions régulières
+   // let emailRegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+   // let nameRegExp = new RegExp(/^[a-zA-Z ,.'-]+$/);
+   // let addressRegExp = new RegExp(/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/);
 
 })
 
