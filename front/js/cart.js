@@ -59,8 +59,11 @@ import { getLocalStorageKey } from './lib/localStorage.js';
 
     }
            
-    //Sélection du bouton supprimer//
-    const btnDelete = document.querySelectorAll(".deleteItem")
+    //*************************** Sélection du bouton supprimer **************************************//
+
+
+    const btnDelete = document.querySelectorAll(".deleteItem");
+    console.log(btnDelete)
     // boucle avec evenement lorsque je clique sur le bouton supprimer
     for (let i = 0; i < btnDelete.length; i++){
         btnDelete[i].addEventListener("click", (event) =>{
@@ -80,17 +83,21 @@ import { getLocalStorageKey } from './lib/localStorage.js';
             const productToDeleteHTMLElement = document.querySelector(`[data-id="${productToDeleteId}"][data-color="${productToDeleteColor}"]`);
             productToDeleteHTMLElement.remove();
             alert("Le " + productToDeleteName +" "+ productToDeleteColor + " est supprimé")
-    })}
+    })};
+
     const btnQuantity = document.querySelectorAll(".itemQuantity");
     console.log(btnQuantity);
   
-    for (let i = 0; i < btnQuantity.length; i++) {
-        btnQuantity[i].addEventListener("click", (event) =>{
+    for (let q = 0; q < btnQuantity.length; q++) {
+        btnQuantity[q].addEventListener("change", (event) =>{
         
-            let productToChangeQuantity = productsList[i].quantity;
+            let productToChangeQuantity = productsList[q].quantity;
             console.log(productToChangeQuantity);
-            let productToChangeInLocalStorage = getLocalStorageKey(btnQuantity);
-            console.log(productToChangeInLocalStorage)
+            
+            let productToChangeInLocalStorageKey = getLocalStorageKey(btnQuantity);
+            console.log(productToChangeInLocalStorageKey);
+
+            localStorage.getItem(productToChangeInLocalStorageKey);
            
 
         })};
@@ -102,24 +109,44 @@ import { getLocalStorageKey } from './lib/localStorage.js';
             totalBasket.push(productPrice);
             console.log(totalBasket);
 
-       
-            let reducer = (accumulator, currentValue) => accumulator + currentValue;
-            let totalPrice = totalBasket.reduce(reducer,0);
-          
+
+        let totalKanap = [];
+        for (let q = 0; q < productsList.length; q++) {
+            let productQuantity = productsList[q].quantity;
+            totalKanap.push(productQuantity);
+            console.log(totalKanap);
+        }
+            let reducerBasket = (accumulator, currentValue) => accumulator + currentValue;
+            let totalPrice = totalBasket.reduce(reducerBasket,0);
             console.log(totalPrice);
+
+            let reducerQuantity = (accumulator, currentValue) => accumulator + currentValue;
+            let totalQuantity = totalKanap.reduce(reducerQuantity,0);
+            console.log(totalQuantity);
+
+
             let updateTotal = document.querySelector(".cart__price");
             updateTotal.innerHTML = `
             <div class="cart__price">
-                        <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${totalPrice}</span> €</p>
+                        <p>Total (<span id="totalQuantity">${totalQuantity}</span> articles) : <span id="totalPrice">${totalPrice}</span> €</p>
                     </div>`;
+//            let totalQuantity = [];
+//        console.log(totalQuantity)
+//      for (let q = 0; q < productsList.length; q++) {
+//        console.log(productsList);
+//      let productQuantity = productsList[q].quantity;
+//            console.log(productQuantity)
+//            totalQuantity.push(productQuantity);
+//            console.log(totalQuantity);
+//            let reducer = (accumulator, currentValue) => accumulator + currentValue;
+//           let totalQuantity = totalQuantity.reduce(reducer,0);
+//            console.log(totalQuantity);
+          //
+         
                
         };
-        for (let q = 0; q < productsList.length; q++) {
-            let productQuantity = productsList[q].quantity;
-            console.log(productQuantity);
-            totalBasket.push(productQuantity);
-            console.log(totalBasket);
-        }
+        
+        
         //**********affichage total prix et quantité ***********/
 
         //let updateTotal = document.querySelector(".cart__price");
