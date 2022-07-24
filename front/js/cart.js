@@ -102,63 +102,34 @@ import { getLocalStorageKey } from './lib/localStorage.js';
 
         })};
         //*******variable prix total panier*******//
-        let totalBasket = [];
-        for (let p = 0; p < productsList.length; p++) {
-            console.log(productsList);
-            let productPrice = productsList[p].price;
-            totalBasket.push(productPrice);
-            console.log(totalBasket);
 
 
         let totalKanap = [];
         for (let q = 0; q < productsList.length; q++) {
             let productQuantity = productsList[q].quantity;
             totalKanap.push(productQuantity);
-            console.log(totalKanap);
-        }
+        };
+
+
+        let totalBasket = [];
+        for (let p = 0; p < productsList.length; p++) {
+            let productPrice = productsList[p].price;
+            totalBasket.push(productPrice);
+   
             let reducerBasket = (accumulator, currentValue) => accumulator + currentValue;
             let totalPrice = totalBasket.reduce(reducerBasket,0);
-            console.log(totalPrice);
-
+            console.log(totalPrice)
             let reducerQuantity = (accumulator, currentValue) => accumulator + currentValue;
             let totalQuantity = totalKanap.reduce(reducerQuantity,0);
             console.log(totalQuantity);
-
-
+            let totalQuantityPrice = totalQuantity * totalPrice;
+            console.log(totalQuantityPrice)
             let updateTotal = document.querySelector(".cart__price");
             updateTotal.innerHTML = `
             <div class="cart__price">
                         <p>Total (<span id="totalQuantity">${totalQuantity}</span> articles) : <span id="totalPrice">${totalPrice}</span> €</p>
                     </div>`;
-//            let totalQuantity = [];
-//        console.log(totalQuantity)
-//      for (let q = 0; q < productsList.length; q++) {
-//        console.log(productsList);
-//      let productQuantity = productsList[q].quantity;
-//            console.log(productQuantity)
-//            totalQuantity.push(productQuantity);
-//            console.log(totalQuantity);
-//            let reducer = (accumulator, currentValue) => accumulator + currentValue;
-//           let totalQuantity = totalQuantity.reduce(reducer,0);
-//            console.log(totalQuantity);
-          //
-         
-               
         };
-        
-        
-        //**********affichage total prix et quantité ***********/
-
-        //let updateTotal = document.querySelector(".cart__price");
-        
-        
-         //  const price = document.querySelector("#totalPrice")
-         // price.setAttribute("priceTotal", totalPrice);
-         //   updateTotal.appendChild(totalPrice);
-         //   updateTotal.innerHTML = `
-          //  <div class="cart__price">
-           //             <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${totalBasket}</span> €</p>
-            //        </div>`;
                
     // TODO modification de la quantité
      
