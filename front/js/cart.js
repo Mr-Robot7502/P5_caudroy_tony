@@ -3,12 +3,12 @@ import { getLocalStorageKey } from './lib/localStorage.js';
 /**
  * ici, on fait en sorte d'exécuter le JS uniquement si la page HTML a été chargée * 
  */
- window.addEventListener('DOMContentLoaded', async () => {
+window.addEventListener('DOMContentLoaded', async () => {
 
     let productsList = [];
-    
+
     /**    Récuperation des produits du panier **/
-    for(let i = 0; i < localStorage.length; i++) {
+    for (let i = 0; i < localStorage.length; i++) {
         // obtenir les produits à partir des clés du local storage
         const key = localStorage.key(i);
         // on ajoute le produit récupéré depuis le local storage grâce à la clé dans le tableau de produits créé précédemment 
@@ -18,7 +18,7 @@ import { getLocalStorageKey } from './lib/localStorage.js';
     const titleCart = document.querySelector("h1");
     const sectionCart = document.querySelector(".cart");
     // Si mon local storage est vide //
-    if(productsList.length == 0) {
+    if (productsList.length == 0) {
         titleCart.innerHTML = "Votre panier est vide";
         sectionCart.style.display = "none";
         console.log("panier vide");
@@ -56,98 +56,108 @@ import { getLocalStorageKey } from './lib/localStorage.js';
             productCart.appendChild(article);
             console.log(article)
         });
-
     }
-           
     //*************************** Sélection du bouton supprimer **************************************//
-
 
     const btnDelete = document.querySelectorAll(".deleteItem");
     console.log(btnDelete)
     // boucle avec evenement lorsque je clique sur le bouton supprimer
-    for (let i = 0; i < btnDelete.length; i++){
-        btnDelete[i].addEventListener("click", (event) =>{
+    for (let i = 0; i < btnDelete.length; i++) {
+        btnDelete[i].addEventListener("click", (event) => {
             // produit selectionné lorsque je clique sur le bouton supprimer
             let productToDeleteName = productsList[i].name;
-            console.log(productToDeleteName);
             let productToDeleteId = productsList[i].product_id;
             let productToDeleteColor = productsList[i].color;
             // on récupère la clé du produit à supprimer dans le local storage
             let productToDeleteLocalStorageKey = getLocalStorageKey(productToDeleteId, productToDeleteColor);
             // on écrase la variable products list avec le résultat du filtrage qui exclut le produit à supprimer
-            productsList = productsList.filter( elt => elt.product_id !== productToDeleteId);
+            productsList = productsList.filter(elt => elt.product_id !== productToDeleteId);
             // on supprime ce produit du local storage directement
             localStorage.removeItem(productToDeleteLocalStorageKey);
-           
+
             // refresh products list
             const productToDeleteHTMLElement = document.querySelector(`[data-id="${productToDeleteId}"][data-color="${productToDeleteColor}"]`);
             productToDeleteHTMLElement.remove();
-            alert("Le " + productToDeleteName +" "+ productToDeleteColor + " est supprimé")
-    })};
+            alert("Le " + productToDeleteName + " " + productToDeleteColor + " est supprimé")
+        })
+    };
 
     const btnQuantity = document.querySelectorAll(".itemQuantity");
-    console.log(btnQuantity);
-  
+
     for (let q = 0; q < btnQuantity.length; q++) {
-        btnQuantity[q].addEventListener("change", (event) =>{
-        
+        btnQuantity[q].addEventListener("change", (event) => {
             let productToChangeQuantity = productsList[q].quantity;
-            console.log(productToChangeQuantity);
-            
             let productToChangeInLocalStorageKey = getLocalStorageKey(btnQuantity);
-            console.log(productToChangeInLocalStorageKey);
-
             localStorage.getItem(productToChangeInLocalStorageKey);
-           
+        })
+    };
+    //*******variable prix total panier*******//
 
-        })};
-        //*******variable prix total panier*******//
-
-
-        let totalKanap = [];
-        for (let q = 0; q < productsList.length; q++) {
-            let productQuantity = productsList[q].quantity;
-            totalKanap.push(productQuantity);
-        };
+    let totalKanap = [];
+    for (let q = 0; q < productsList.length; q++) {
+        let productQuantity = productsList[q].quantity;
+        totalKanap.push(productQuantity);
+    };
 
 
-        let totalBasket = [];
-        for (let p = 0; p < productsList.length; p++) {
-            let productPrice = productsList[p].price;
-            totalBasket.push(productPrice);
-   
-            let reducerBasket = (accumulator, currentValue) => accumulator + currentValue;
-            let totalPrice = totalBasket.reduce(reducerBasket,0);
-            console.log(totalPrice)
-            let reducerQuantity = (accumulator, currentValue) => accumulator + currentValue;
-            let totalQuantity = totalKanap.reduce(reducerQuantity,0);
-            console.log(totalQuantity);
-            let totalQuantityPrice = totalQuantity * totalPrice;
-            console.log(totalQuantityPrice)
-            let updateTotal = document.querySelector(".cart__price");
-            updateTotal.innerHTML = `
+    let totalBasket = [];
+    for (let p = 0; p < productsList.length; p++) {
+        let productPrice = productsList[p].price* productsList[p].quantity;
+        totalBasket.push(productPrice);
+        console.log(totalBasket)
+
+        let reducerBasket = (accumulator, currentValue) => accumulator + currentValue;
+        let totalBasketPrice = totalBasket.reduce(reducerBasket, 0);
+        console.log(totalBasketPrice);
+        let reducerQuantity = (accumulator, currentValue) => accumulator + currentValue;
+        let totalBasketQuantity = totalKanap.reduce(reducerQuantity, 0);
+        console.log(totalQuantity);
+        let updateTotal = document.querySelector(".cart__price");
+        updateTotal.innerHTML = `
             <div class="cart__price">
-                        <p>Total (<span id="totalQuantity">${totalQuantity}</span> articles) : <span id="totalPrice">${totalPrice}</span> €</p>
+                        <p>Total (<span id="totalQuantity">${totalBasketQuantity}</span> articles) : <span id="totalPrice">${totalBasketPrice}</span> €</p>
                     </div>`;
-        };
-               
-    // TODO modification de la quantité
-     
-    // TODO logique de validation du formulaire
-    // Ajout des Regex
-  //  let form = document.querySelector(".cart__order__form");
-   // //Création des expressions régulières
-   // let emailRegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
-   // let nameRegExp = new RegExp(/^[a-zA-Z ,.'-]+$/);
-   // let addressRegExp = new RegExp(/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/);
+    };
 
+    function handleOrder() {
+        // TODO logique de validation du formulaire
+        // Ajout des Regex
+        let form = document.querySelector(".cart__order__form");
+        // //Création des expressions régulières
+        let emailRegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+        let nameRegExp = new RegExp(/^[a-zA-Z ,.'-]+$/);
+        let addressRegExp = new RegExp(/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/);
+
+
+        form.firstName.addEventListener('change', function() {
+            validFirstName(this);
+
+               //validation du prénom
+    const validFirstName = function(inputFirstName) {
+        let firstNameErrorMsg = inputFirstName.nextElementSibling;
+
+        if (charRegExp.test(inputFirstName.value)) {
+            firstNameErrorMsg.innerHTML = '';
+        } else {
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+        });
+
+
+
+
+
+
+
+    }
 })
 
 
-  
 
 
 
-  
-  
+
+
+
 
