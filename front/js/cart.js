@@ -1,5 +1,5 @@
 import { getLocalStorageKey } from './lib/localStorage.js';
-
+import { getLocalStorageQuantity } from'./lib/localStorage.js';
 /**
  * ici, on fait en sorte d'exécuter le JS uniquement si la page HTML a été chargée * 
  */
@@ -70,25 +70,49 @@ window.addEventListener('DOMContentLoaded', async () => {
             let productToDeleteColor = productsList[i].color;
             // on récupère la clé du produit à supprimer dans le local storage
             let productToDeleteLocalStorageKey = getLocalStorageKey(productToDeleteId, productToDeleteColor);
+            console.log(productToDeleteLocalStorageKey)
             // on écrase la variable products list avec le résultat du filtrage qui exclut le produit à supprimer
             productsList = productsList.filter(elt => elt.product_id !== productToDeleteId);
             // on supprime ce produit du local storage directement
             localStorage.removeItem(productToDeleteLocalStorageKey);
-
+            console.log(localStorage);
             // refresh products list
             const productToDeleteHTMLElement = document.querySelector(`[data-id="${productToDeleteId}"][data-color="${productToDeleteColor}"]`);
             productToDeleteHTMLElement.remove();
+            console.log(productToDeleteHTMLElement.remove);
             alert("Le " + productToDeleteName + " " + productToDeleteColor + " est supprimé")
         })
     };
 
+
+    //*************************** Sélection de la quantité **************************************//
+
+
     const btnQuantity = document.querySelectorAll(".itemQuantity");
+    console.log(btnQuantity)
 
     for (let q = 0; q < btnQuantity.length; q++) {
-        btnQuantity[q].addEventListener("change", (event) => {
+        btnQuantity[q].addEventListener("click", (event) => {
+       
+           // produit sélectionner lorsque je clique sur le bouton pour modifier la quantité
+           let productToChangeName = productsList[q].name;
+           console.log(productToChangeName)
+           let productToChangeColor = productsList[q].color;
+           console.log(productToChangeColor);
+            let productToChangeId = productsList[q].product_id;
+            console.log(productToChangeId)
+            productsList[q].quantity = event.target.value;
             let productToChangeQuantity = productsList[q].quantity;
-            let productToChangeInLocalStorageKey = getLocalStorageKey(btnQuantity);
-            localStorage.getItem(productToChangeInLocalStorageKey);
+            console.log(productToChangeQuantity);
+           // productsList = productsList.filter(elt => elt.product_id !== productToChangeQuantity);
+            //console.log(productsList);
+            let productToChangeQuantityInLocalStorageKey = getLocalStorageKey(productToChangeId, productToChangeColor);
+            console.log(productToChangeQuantityInLocalStorageKey);
+            productsList = productsList.filter(elt => elt.product_id !== productToChangeQuantity);
+
+            localStorage.setItem(productToChangeQuantityInLocalStorageKey, JSON.stringify(productsList));
+            console.log(localStorage)
+          
         })
     };
     //*******variable prix total panier*******//
@@ -99,19 +123,15 @@ window.addEventListener('DOMContentLoaded', async () => {
         totalKanap.push(productQuantity);
     };
 
-
     let totalBasket = [];
     for (let p = 0; p < productsList.length; p++) {
         let productPrice = productsList[p].price* productsList[p].quantity;
         totalBasket.push(productPrice);
-        console.log(totalBasket)
 
         let reducerBasket = (accumulator, currentValue) => accumulator + currentValue;
         let totalBasketPrice = totalBasket.reduce(reducerBasket, 0);
-        console.log(totalBasketPrice);
         let reducerQuantity = (accumulator, currentValue) => accumulator + currentValue;
         let totalBasketQuantity = totalKanap.reduce(reducerQuantity, 0);
-        console.log(totalQuantity);
         let updateTotal = document.querySelector(".cart__price");
         updateTotal.innerHTML = `
             <div class="cart__price">
@@ -127,28 +147,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         let emailRegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
         let nameRegExp = new RegExp(/^[a-zA-Z ,.'-]+$/);
         let addressRegExp = new RegExp(/^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+/);
-
-
-        form.firstName.addEventListener('change', function() {
-            validFirstName(this);
-
-               //validation du prénom
-    const validFirstName = function(inputFirstName) {
-        let firstNameErrorMsg = inputFirstName.nextElementSibling;
-
-        if (charRegExp.test(inputFirstName.value)) {
-            firstNameErrorMsg.innerHTML = '';
-        } else {
-            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
-        }
-    };
-        });
-
-
-
-
-
-
 
     }
 })
